@@ -1,0 +1,56 @@
+project_id = "jlxfahqfmahrlztiedyd"
+
+[api]
+enabled = true
+port = 54321
+schemas = ["public", "graphql_public"]
+extra_search_path = ["public", "extensions"]
+max_rows = 1000
+
+[functions.synthesize-report]
+verify_jwt = false
+
+[functions.analyze-image]
+verify_jwt = false
+
+[functions.analyze-text]
+verify_jwt = false
+
+[functions.generate-justification]
+verify_jwt = true
+
+[functions.extract-plan-data]
+verify_jwt = true
+
+[functions.senior-planner-audit]
+verify_jwt = true
+
+[functions.plan-management-expert]
+verify_jwt = true
+
+[functions.coc-cover-letter-generator]
+verify_jwt = false
+
+[functions.coc-eligibility-assessor]
+verify_jwt = true
+
+[functions.generate-embedding]
+verify_jwt = true
+
+[functions.generate-weekly-summary]
+verify_jwt = true
+
+[functions.rag-agent]
+verify_jwt = true
+
+[functions.send-budget-alert]
+verify_jwt = true
+
+[functions.suggest-goal-alignment]
+verify_jwt = true
+
+[functions.forecast-budget]
+verify_jwt = false
+
+[functions.analyze-roster]
+verify_jwt = true

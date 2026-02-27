@@ -1,0 +1,57 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Next.js
+.next/
+out/
+build/
+
+# Environment variables — NEVER commit secrets
+.env
+.env.local
+.env.*.local
+!.env.example
+!.env.local.example
+
+# Supabase temp / local state
+supabase/.temp/
+supabase/.branches/
+supabase/functions/.cache/
+
+# Debug logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor directories
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Testing
+/coverage
+/.playwright-mcp/
+/playwright-report/
+/test-results/
+
+# Migration exports (contain sensitive data)
+migration-export/
+
+# Vercel
+.vercel
+
+# Misc
+*.pem
+*.log
