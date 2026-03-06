@@ -54,3 +54,9 @@ verify_jwt = false
 
 [functions.analyze-roster]
 verify_jwt = true
+
+[functions.quantum-sign]
+verify_jwt = false
+
+[functions.quantum-sign-public]
+verify_jwt = false

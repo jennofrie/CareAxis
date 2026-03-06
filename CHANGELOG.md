@@ -9,6 +9,28 @@ Maintained by **JD Digital Systems** — https://github.com/jennofrie/CareAxis
 
 ---
 
+## [Unreleased]
+
+### Added
+- **QuantumSign e-signature module** — complete document signing system
+  - Main dashboard with 5 tabs: Start, Inbox, Sent, Completed, My Templates
+  - Public signing page (`/sign/{token}`) — unauthenticated recipients can review and sign documents
+  - Click-to-place signature positioning on PDF pages
+  - Canvas-based signature drawing pad
+  - PDF rendering with zoom controls and multi-page navigation
+  - Signature request management: create, cancel, remind, delete, download
+  - Real-time status tracking: PENDING, VIEWED, SIGNED, DECLINED, EXPIRED
+  - Email notifications via Resend (request, reminder, signed, declined)
+  - Server-side PDF merging using pdf-lib (signature embedded into PDF)
+  - Signer IP and user-agent audit trail
+- New edge functions: `quantum-sign` (authenticated CRUD) and `quantum-sign-public` (token-based public signing)
+- New dependency: `react-signature-canvas` for signature drawing
+- QuantumSign added to dashboard sidebar navigation
+- 11 new components in `src/components/quantum-sign/`
+- `useSignatureRequests` hook with TanStack Query integration
+
+---
+
 ## [2.1.0] - 2026-02-27
 
 ### Added

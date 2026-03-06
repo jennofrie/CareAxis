@@ -20,6 +20,7 @@ import {
   Bot,
   FileOutput,
   Brain,
+  PenTool,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/client";
@@ -36,6 +37,7 @@ const navItems = [
   { title: "Justification Drafter", href: "/justification-drafter", icon: FileCheck, superAdminOnly: false },
   { title: "Senior Planner", href: "/senior-planner", icon: Scale, superAdminOnly: false },
   { title: "Plan Management", href: "/plan-management-expert", icon: BadgeDollarSign, superAdminOnly: false },
+  { title: "QuantumSign", href: "/dashboard/quantum-sign", icon: PenTool, superAdminOnly: false },
   { title: "RAG Agent", href: "/rag-agent", icon: Bot, superAdminOnly: true },
   { title: "Settings", href: "/settings", icon: Settings, superAdminOnly: false },
 ];

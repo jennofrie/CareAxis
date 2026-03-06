@@ -44,7 +44,7 @@ CareAxis is a secure, multi-tenant B2B SaaS platform designed for NDIS service p
 
 ## Features
 
-CareAxis provides 13 purpose-built pages and tools:
+CareAxis provides 14 purpose-built pages and tools:
 
 | # | Page | Description | Storage |
 |---|------|-------------|---------|
@@ -60,7 +60,8 @@ CareAxis provides 13 purpose-built pages and tools:
 | 10 | **Visual Case Notes** | Rich case notes editor with pagination | `localStorage` |
 | 11 | **Weekly Summary** | Weekly summary report generator with pagination | `localStorage` |
 | 12 | **RAG Agent** | AI chatbot with retrieval-augmented generation using pgvector | `rag_agent_conversations` + `rag_agent_sessions` |
-| 13 | **Watch Demo** | Guided product walkthrough | — |
+| 13 | **QuantumSign** | E-signature system with PDF viewing, click-to-place signatures, and email notifications | `signature_requests` |
+| 14 | **Watch Demo** | Guided product walkthrough | — |
 
 ### Key Capabilities
 
@@ -68,6 +69,7 @@ CareAxis provides 13 purpose-built pages and tools:
 - **Budget Forecasting** — Predict NDIS budget consumption and alert on anomalies
 - **Roster Penalty Rate Analysis** — Victoria-specific penalty rate toggle with CSV and PDF export
 - **RAG Agent** — Retrieval-augmented generation chatbot with 768-dimensional pgvector embeddings
+- **QuantumSign e-signatures** — Secure document signing with click-to-place signatures, PDF merging, and email notifications
 - **PDF Export** — Export all major reports to PDF via jsPDF + jspdf-autotable
 - **CSV Export** — Roster and budget data export via Papa Parse
 - **History Panels** — Per-feature history with caching and pagination
@@ -203,7 +205,7 @@ Do **not** use `vector(768)` without the schema prefix, as this will cause migra
 
 ## Edge Functions
 
-CareAxis deploys 16 Deno edge functions to Supabase:
+CareAxis deploys 18 Deno edge functions to Supabase:
 
 | Function | Purpose |
 |----------|---------|
@@ -223,6 +225,8 @@ CareAxis deploys 16 Deno edge functions to Supabase:
 | `senior-planner-audit` | Senior planner audit report generation |
 | `suggest-goal-alignment` | NDIS goal alignment suggestions |
 | `synthesize-report` | Multi-source NDIS report synthesis |
+| `quantum-sign` | Authenticated signature request CRUD operations |
+| `quantum-sign-public` | Token-based public document signing (no JWT required) |
 
 ---
 
