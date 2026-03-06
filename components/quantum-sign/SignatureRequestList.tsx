@@ -1,12 +1,12 @@
 'use client';
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal, Send, Trash2, Download, Eye, XCircle } from "lucide-react";
 import { RequestStatusBadge } from "./RequestStatusBadge";
 import { SignatureRequest, useCancelSignatureRequest, useRemindSignatureRequest, useDeleteSignatureRequest, useDownloadSignatureDocument } from "@/hooks/useSignatureRequests";
-import { useToast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 
 interface SignatureRequestListProps {
   requests: SignatureRequest[];
@@ -18,32 +18,31 @@ export function SignatureRequestList({ requests, onViewDetails }: SignatureReque
   const remindRequest = useRemindSignatureRequest();
   const deleteRequest = useDeleteSignatureRequest();
   const downloadDoc = useDownloadSignatureDocument();
-  const { toast } = useToast();
 
   const handleRemind = async (id: string) => {
     try {
       await remindRequest.mutateAsync(id);
-      toast({ title: "Reminder sent", description: "A reminder email has been sent." });
+      toast.success("Reminder sent");
     } catch {
-      toast({ title: "Error", description: "Failed to send reminder.", variant: "destructive" });
+      toast.error("Failed to send reminder.");
     }
   };
 
   const handleCancel = async (id: string) => {
     try {
       await cancelRequest.mutateAsync(id);
-      toast({ title: "Request cancelled" });
+      toast.success("Request cancelled");
     } catch {
-      toast({ title: "Error", description: "Failed to cancel request.", variant: "destructive" });
+      toast.error("Failed to cancel request.");
     }
   };
 
   const handleDelete = async (id: string) => {
     try {
       await deleteRequest.mutateAsync(id);
-      toast({ title: "Request deleted" });
+      toast.success("Request deleted");
     } catch {
-      toast({ title: "Error", description: "Failed to delete request.", variant: "destructive" });
+      toast.error("Failed to delete request.");
     }
   };
 
@@ -52,7 +51,7 @@ export function SignatureRequestList({ requests, onViewDetails }: SignatureReque
       const result = await downloadDoc.mutateAsync({ requestId: id, type });
       window.open(result.url, '_blank');
     } catch {
-      toast({ title: "Error", description: "Failed to download document.", variant: "destructive" });
+      toast.error("Failed to download document.");
     }
   };
 

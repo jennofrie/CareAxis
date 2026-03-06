@@ -1,5 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { createClient } from "@/lib/supabase/client";
+
+const supabase = createClient();
 
 export interface SignatureRequest {
   id: string;

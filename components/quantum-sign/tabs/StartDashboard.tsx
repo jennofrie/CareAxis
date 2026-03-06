@@ -1,5 +1,5 @@
 import { GlassCard } from "@/components/GlassCard";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 import { UploadCloud, FileSignature, Clock, CheckCircle2, FileText, ChevronRight } from "lucide-react";
 
 interface StartDashboardProps {

@@ -1,10 +1,10 @@
 'use client';
 
 import { useState, useEffect, useRef } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { createClient } from "@/lib/supabase/client";
 import { PDFViewer } from "@/components/quantum-sign/PDFViewer";
 import { SignaturePad, SignaturePadRef } from "@/components/quantum-sign/SignaturePad";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 import { Textarea } from "@/components/ui/textarea";
 import {
   Dialog,
@@ -12,8 +12,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { CareAxisLogo } from "@/components/CareAxisLogo";
-import { Loader2, CheckCircle, XCircle, AlertTriangle, RotateCcw } from "lucide-react";
+import { Loader2, CheckCircle, XCircle, AlertTriangle, RotateCcw, Brain } from "lucide-react";
 
 const PUBLIC_EDGE_FUNCTION = "quantum-sign-public";
 
@@ -42,6 +41,7 @@ interface SignDocumentProps {
 }
 
 export default function SignDocument({ token }: SignDocumentProps) {
+  const supabase = createClient();
   const signaturePadRef = useRef<SignaturePadRef>(null);
 
   const [request, setRequest] = useState<SigningRequest | null>(null);
@@ -212,7 +212,12 @@ export default function SignDocument({ token }: SignDocumentProps) {
     <div className="min-h-screen bg-background">
       <header className="border-b border-border p-4">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
-          <CareAxisLogo size="sm" />
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-600 to-purple-600 flex items-center justify-center">
+              <Brain className="w-4 h-4 text-white" />
+            </div>
+            <span className="font-bold text-lg">CareAxis</span>
+          </div>
           <span className="text-sm text-muted-foreground">QuantumSign</span>
         </div>
       </header>

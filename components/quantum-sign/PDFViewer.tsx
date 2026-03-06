@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import * as pdfjsLib from "pdfjs-dist";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 import { ChevronLeft, ChevronRight, Loader2, ZoomIn, ZoomOut } from "lucide-react";
 
 if (typeof window !== 'undefined') {

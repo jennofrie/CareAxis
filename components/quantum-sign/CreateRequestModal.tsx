@@ -2,14 +2,14 @@
 
 import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/Input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Loader2, Upload } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
+import { createClient } from "@/lib/supabase/client";
 import { useCreateSignatureRequest } from "@/hooks/useSignatureRequests";
-import { useToast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 
 interface CreateRequestModalProps {
   open: boolean;
@@ -24,8 +24,8 @@ export function CreateRequestModal({ open, onOpenChange }: CreateRequestModalPro
   const [file, setFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
 
+  const supabase = createClient();
   const createRequest = useCreateSignatureRequest();
-  const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -37,8 +37,7 @@ export function CreateRequestModal({ open, onOpenChange }: CreateRequestModalPro
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
 
-      const { generateUUID } = await import('@/lib/uuid');
-      const requestId = generateUUID();
+      const requestId = crypto.randomUUID();
       const filePath = `${user.id}/original/${requestId}.pdf`;
 
       const { error: uploadError } = await supabase.storage
@@ -55,10 +54,7 @@ export function CreateRequestModal({ open, onOpenChange }: CreateRequestModalPro
         filePath,
       });
 
-      toast({
-        title: "Request sent",
-        description: `Signature request sent to ${recipientEmail}`,
-      });
+      toast.success(`Signature request sent to ${recipientEmail}`);
 
       setDocumentTitle("");
       setDocumentDescription("");
@@ -67,11 +63,7 @@ export function CreateRequestModal({ open, onOpenChange }: CreateRequestModalPro
       setFile(null);
       onOpenChange(false);
     } catch (err) {
-      toast({
-        title: "Error",
-        description: err instanceof Error ? err.message : "Failed to create request",
-        variant: "destructive",
-      });
+      toast.error(err instanceof Error ? err.message : "Failed to create request");
     } finally {
       setUploading(false);
     }

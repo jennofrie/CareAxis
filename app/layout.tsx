@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
+import { QueryProvider } from "@/components/providers/QueryProvider";
 import { Toaster } from "sonner";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -23,7 +24,9 @@ export default function RootLayout({
         className={`${inter.className} bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-50 antialiased`}
       >
         <ThemeProvider>
-          {children}
+          <QueryProvider>
+            {children}
+          </QueryProvider>
           <Toaster position="bottom-right" richColors closeButton />
         </ThemeProvider>
       </body>

@@ -1,7 +1,7 @@
 'use client';
 
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 import { Download } from "lucide-react";
 import { RequestStatusBadge } from "./RequestStatusBadge";
 import { SignatureRequest, useDownloadSignatureDocument } from "@/hooks/useSignatureRequests";

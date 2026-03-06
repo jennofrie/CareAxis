@@ -2,7 +2,7 @@
 
 import { useRef, forwardRef, useImperativeHandle } from "react";
 import SignatureCanvas from "react-signature-canvas";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 import { Eraser } from "lucide-react";
 
 export interface SignaturePadRef {

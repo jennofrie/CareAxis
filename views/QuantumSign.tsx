@@ -9,7 +9,7 @@ import { SentTab } from "@/components/quantum-sign/tabs/SentTab";
 import { CompletedTab } from "@/components/quantum-sign/tabs/CompletedTab";
 import { MyTemplatesTab } from "@/components/quantum-sign/tabs/MyTemplatesTab";
 import { useSignatureRequests, SignatureRequest } from "@/hooks/useSignatureRequests";
-import { supabase } from "@/integrations/supabase/client";
+import { createClient } from "@/lib/supabase/client";
 import { RequestDetailModal } from "@/components/quantum-sign/RequestDetailModal";
 import { CreateRequestModal } from "@/components/quantum-sign/CreateRequestModal";
 
@@ -22,6 +22,7 @@ export default function QuantumSign() {
   const [createModalOpen, setCreateModalOpen] = useState(false);
 
   useEffect(() => {
+    const supabase = createClient();
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session?.user?.email) {
         setCurrentUserEmail(session.user.email);
