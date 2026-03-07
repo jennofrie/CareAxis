@@ -97,107 +97,6 @@ const statusColors: Record<string, string> = {
 };
 
 // ---------------------------------------------------------------------------
-// Dummy / fallback data
-// ---------------------------------------------------------------------------
-
-const DUMMY_CASES: Case[] = [
-  {
-    id: "1",
-    participant_first_name: "Sarah",
-    participant_last_name: "Mitchell",
-    status: "Active",
-    plan_start_date: "2025-11-01",
-    plan_end_date: "2026-05-01",
-    created_at: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
-    user_id: "",
-  },
-  {
-    id: "2",
-    participant_first_name: "James",
-    participant_last_name: "Chen",
-    status: "Review",
-    plan_start_date: "2025-09-15",
-    plan_end_date: "2026-03-15",
-    created_at: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString(),
-    user_id: "",
-  },
-  {
-    id: "3",
-    participant_first_name: "Maria",
-    participant_last_name: "Garcia",
-    status: "Active",
-    plan_start_date: "2026-01-10",
-    plan_end_date: "2026-07-10",
-    created_at: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
-    user_id: "",
-  },
-  {
-    id: "4",
-    participant_first_name: "David",
-    participant_last_name: "Thompson",
-    status: "Pending",
-    plan_start_date: null,
-    plan_end_date: null,
-    created_at: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
-    user_id: "",
-  },
-  {
-    id: "5",
-    participant_first_name: "Emily",
-    participant_last_name: "Nguyen",
-    status: "Active",
-    plan_start_date: "2025-12-01",
-    plan_end_date: "2026-06-01",
-    created_at: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
-    user_id: "",
-  },
-  {
-    id: "6",
-    participant_first_name: "Robert",
-    participant_last_name: "Williams",
-    status: "Review",
-    plan_start_date: "2025-10-01",
-    plan_end_date: "2026-04-01",
-    created_at: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
-    user_id: "",
-  },
-  {
-    id: "7",
-    participant_first_name: "Lisa",
-    participant_last_name: "Park",
-    status: "Active",
-    plan_start_date: "2026-02-01",
-    plan_end_date: "2026-08-01",
-    created_at: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
-    user_id: "",
-  },
-];
-
-const DUMMY_ACTIVITY: ActivityLog[] = [
-  {
-    id: "a1",
-    user_id: "",
-    user_email: "you@example.com",
-    action: "Created case note for Sarah Mitchell",
-    created_at: new Date(Date.now() - 30 * 60 * 1000).toISOString(),
-  },
-  {
-    id: "a2",
-    user_id: "",
-    user_email: "you@example.com",
-    action: "Synthesized Report for James Chen",
-    created_at: new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString(),
-  },
-  {
-    id: "a3",
-    user_id: "",
-    user_email: "you@example.com",
-    action: "Updated plan for Maria Garcia",
-    created_at: new Date(Date.now() - 8 * 60 * 60 * 1000).toISOString(),
-  },
-];
-
-// ---------------------------------------------------------------------------
 // Constants
 // ---------------------------------------------------------------------------
 
@@ -235,12 +134,11 @@ export default function DashboardPage() {
       } = await supabase.auth.getUser();
 
       if (!user) {
-        // Use dummy data when not authenticated or in dev
-        setCases(DUMMY_CASES);
-        setTotalCases(DUMMY_CASES.length);
-        setActivityLogs(DUMMY_ACTIVITY);
-        setCaseNotesCount(12);
-        setReportsCount(4);
+        setCases([]);
+        setTotalCases(0);
+        setActivityLogs([]);
+        setCaseNotesCount(0);
+        setReportsCount(0);
         setLoading(false);
         return;
       }
@@ -277,27 +175,17 @@ export default function DashboardPage() {
       const fetchedCases = (casesData as Case[] | null) ?? [];
       const fetchedActivity = (activityData as ActivityLog[] | null) ?? [];
 
-      // Fall back to dummy data if nothing exists
-      if (fetchedCases.length === 0 && fetchedActivity.length === 0) {
-        setCases(DUMMY_CASES);
-        setTotalCases(DUMMY_CASES.length);
-        setActivityLogs(DUMMY_ACTIVITY);
-        setCaseNotesCount(12);
-        setReportsCount(4);
-      } else {
-        setCases(fetchedCases);
-        setTotalCases(casesCount ?? fetchedCases.length);
-        setActivityLogs(fetchedActivity);
-        setCaseNotesCount(notesCount ?? 0);
-        setReportsCount(rptCount ?? 0);
-      }
+      setCases(fetchedCases);
+      setTotalCases(casesCount ?? fetchedCases.length);
+      setActivityLogs(fetchedActivity);
+      setCaseNotesCount(notesCount ?? 0);
+      setReportsCount(rptCount ?? 0);
     } catch {
-      // Fallback to dummy data on error
-      setCases(DUMMY_CASES);
-      setTotalCases(DUMMY_CASES.length);
-      setActivityLogs(DUMMY_ACTIVITY);
-      setCaseNotesCount(12);
-      setReportsCount(4);
+      setCases([]);
+      setTotalCases(0);
+      setActivityLogs([]);
+      setCaseNotesCount(0);
+      setReportsCount(0);
     } finally {
       setLoading(false);
     }
@@ -475,7 +363,8 @@ export default function DashboardPage() {
                 return (
                   <Card
                     key={c.id}
-                    className="border border-slate-200 bg-white p-5 transition-shadow hover:shadow-md dark:border-slate-800 dark:bg-slate-900"
+                    className="cursor-pointer border border-slate-200 bg-white p-5 transition-shadow hover:shadow-md dark:border-slate-800 dark:bg-slate-900"
+                    onClick={() => router.push(`/participants/${c.id}`)}
                   >
                     <div className="mb-4 flex items-center gap-3">
                       {/* Avatar */}
