@@ -376,7 +376,54 @@ export function exportBudgetForecastPdf(
   doc.save(`CareAxis_Budget_Forecast_${Date.now()}.pdf`);
 }
 
-// ─── H. Roster Analyzer ──────────────────────────────────────────────────────
+// ─── H. Visual Case Note ─────────────────────────────────────────────────────
+const CASE_NOTE_SECTIONS = [
+  { key: "caseNoteSubject", label: "Case Note Subject" },
+  { key: "dateOfService", label: "Date of Service" },
+  { key: "interactionType", label: "Interaction Type" },
+  { key: "goalAlignment", label: "Goal Alignment" },
+  { key: "detailsOfSupport", label: "Details of Support Provided" },
+  { key: "participantPresentation", label: "Participant Presentation and Engagement" },
+  { key: "progressAndOutcomes", label: "Progress and Outcomes" },
+  { key: "actionPlan", label: "Action Plan and Next Steps" },
+] as const;
+
+const CASE_NOTE_PERSONA_LABELS: Record<string, string> = {
+  "sc-level-2": "Support Coordinator Level 2",
+  "ssc-level-3": "Senior Support Coordinator Level 3",
+  "recovery-coach": "Psychosocial Recovery Coach",
+};
+
+export function exportCaseNotePdf(
+  result: Record<string, string>,
+  persona: string
+) {
+  const doc = new jsPDF();
+  const personaLabel = CASE_NOTE_PERSONA_LABELS[persona] || persona;
+  let y = addPageHeader(doc, "Visual Case Note", personaLabel);
+
+  // Date + CONFIDENTIAL info box
+  doc.setFillColor("#dbeafe");
+  doc.roundedRect(14, y, 182, 12, 2, 2, "F");
+  doc.setFontSize(8);
+  doc.setTextColor("#1e3a5f");
+  doc.setFont("helvetica", "normal");
+  doc.text(`Date: ${formatDateAU()}`, 18, y + 5);
+  doc.text("CONFIDENTIAL — For Professional Use Only", 18, y + 9.5);
+  y += 18;
+
+  for (const section of CASE_NOTE_SECTIONS) {
+    const content = result[section.key] ?? "";
+    if (content) {
+      y = writeSection(doc, section.label, content, y);
+    }
+  }
+
+  addAllFooters(doc);
+  doc.save(`CareAxis_Case_Note_${Date.now()}.pdf`);
+}
+
+// ─── I. Roster Analyzer ──────────────────────────────────────────────────────
 export function exportRosterPdf(result: any) {
   const doc = new jsPDF();
   let y = addPageHeader(doc, "Roster Analysis Report");
