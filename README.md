@@ -39,6 +39,7 @@ CareAxis is a secure, multi-tenant B2B SaaS platform designed for NDIS service p
 - **Access Control**: Restricted to `@cdssvic.com.au` email domain
 - **Region**: AWS ap-south-1 (Supabase project: `jlxfahqfmahrlztiedyd`)
 - **Dev Port**: 3001
+- **Landing UI**: Refreshed dark theme with particle hover-connect background
 
 ---
 
@@ -95,6 +96,8 @@ CareAxis provides 14 purpose-built pages and tools:
 | jspdf-autotable | latest | PDF table rendering |
 | Papa Parse | latest | CSV parsing and export |
 | Sonner | latest | Toast notifications |
+| @tsparticles/react | latest | Particle background animation |
+| @tsparticles/slim | latest | Lightweight particle engine |
 
 ### Backend
 

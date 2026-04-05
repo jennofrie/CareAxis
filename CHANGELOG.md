@@ -12,6 +12,7 @@ Maintained by **JD Digital Systems** — https://github.com/jennofrie/CareAxis
 ## [Unreleased]
 
 ### Added
+- **Landing UI refresh** — modernized landing visuals with particle hover-connect background and refined typography
 - **QuantumSign e-signature module** — complete document signing system
   - Main dashboard with 5 tabs: Start, Inbox, Sent, Completed, My Templates
   - Public signing page (`/sign/{token}`) — unauthenticated recipients can review and sign documents
