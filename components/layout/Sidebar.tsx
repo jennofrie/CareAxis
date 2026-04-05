@@ -21,6 +21,7 @@ import {
   FileOutput,
   Brain,
   PenTool,
+  UserCog,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/client";
@@ -33,6 +34,7 @@ const navItems = [
   { title: "Visual Case Notes", href: "/visual-case-notes", icon: StickyNote, superAdminOnly: false },
   { title: "Budget Forecaster", href: "/budget-forecaster", icon: TrendingUp, superAdminOnly: false },
   { title: "Weekly Summary", href: "/weekly-summary", icon: Calendar, superAdminOnly: false },
+  { title: "Staff Management", href: "/staff", icon: UserCog, superAdminOnly: false },
   { title: "Roster Analyzer", href: "/roster-analyzer", icon: Users, superAdminOnly: false },
   { title: "Justification Drafter", href: "/justification-drafter", icon: FileCheck, superAdminOnly: false },
   { title: "Senior Planner", href: "/senior-planner", icon: Scale, superAdminOnly: false },
