@@ -21,6 +21,7 @@ import {
   FileOutput,
   Brain,
   PenTool,
+  Contact,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/client";
@@ -28,6 +29,7 @@ import { usePermissions } from "@/hooks/usePermissions";
 
 const navItems = [
   { title: "Dashboard", href: "/dashboard", icon: LayoutDashboard, superAdminOnly: false },
+  { title: "Participants", href: "/participants", icon: Contact, superAdminOnly: false },
   { title: "Report Synthesizer", href: "/report-synthesizer", icon: FileText, superAdminOnly: false },
   { title: "CoC Cover Letter", href: "/coc-cover-letter", icon: FileOutput, superAdminOnly: false },
   { title: "Visual Case Notes", href: "/visual-case-notes", icon: StickyNote, superAdminOnly: false },
@@ -84,7 +86,10 @@ export function Sidebar() {
         {navItems
           .filter((item) => !item.superAdminOnly || permissions.isSuperAdmin)
           .map((item) => {
-            const isActive = pathname === item.href;
+            const isActive =
+            item.href === "/dashboard"
+              ? pathname === item.href
+              : pathname === item.href || pathname.startsWith(item.href + "/");
 
             return (
               <Link
