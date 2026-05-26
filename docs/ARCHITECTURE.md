@@ -1,8 +1,7 @@
 # CareAxis — Architecture Overview
 
-Maintained by **JD Digital Systems**
-Repository: https://github.com/jennofrie/CareAxis
-Last updated: 2026-02-27
+> Maintained by **JD Digital Systems** — [github.com/jennofrie/CareAxis](https://github.com/jennofrie/CareAxis)
+> Last updated: May 2026
 
 ---
 
@@ -23,37 +22,38 @@ Last updated: 2026-02-27
 
 ## System Architecture Diagram
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                          CLIENT BROWSER                         │
-└────────────────────────┬────────────────────────────────────────┘
-                         │
-          ┌──────────────▼──────────────┐
-          │    Next.js 15 App Router    │
-          │       (port 3001)           │
-          │  React 19 / TypeScript 5.7  │
-          │  Tailwind CSS / shadcn/ui   │
-          └──────┬───────────┬──────────┘
-                 │           │
-    ┌────────────▼──┐   ┌────▼──────────────────────┐
-    │ Supabase API  │   │     Supabase Edge Functions│
-    │  (REST + WS)  │   │     (Deno runtime, 16 fns) │
-    └────────┬──────┘   └────┬──────────┬────────────┘
-             │               │          │
-    ┌────────▼──────┐  ┌─────▼──┐  ┌───▼──────┐
-    │  PostgreSQL   │  │ Gemini │  │  Stripe  │
-    │  (pgvector)   │  │   AI   │  │ Payments │
-    │  + RLS        │  └────────┘  └──────────┘
-    └───────────────┘
-             │                        ┌──────────┐
-             │   (storage buckets)    │  Resend  │
-    ┌────────▼──────────────┐         │  Email   │
-    │  Supabase Storage     │         └──────────┘
-    │  (S3-compatible)      │
-    │  careaxis-reports     │
-    │  justification-       │
-    │    attachments        │
-    └───────────────────────┘
+```mermaid
+graph TB
+    subgraph Client["Client Layer"]
+        Browser["Browser\nNext.js 16 App Router\nReact 18 · TypeScript 5.9\nTailwind CSS · shadcn/ui"]
+    end
+
+    subgraph Middleware["Middleware Layer"]
+        MW["Next.js Middleware\nJWT Validation\nDomain Enforcement (@cdssvic.com.au)"]
+    end
+
+    subgraph Supabase["Supabase (AWS ap-south-1 · jlxfahqfmahrlztiedyd)"]
+        Auth["Supabase Auth\nJWT Sessions\nEmail Confirmation"]
+        DB["PostgreSQL 15\n13 Tables · RLS on all\npgvector 768-dim embeddings"]
+        EF["Deno Edge Functions\n18 serverless functions"]
+        Storage["Supabase Storage\nS3-compatible\ncareaxis-reports\njustification-attachments"]
+    end
+
+    subgraph External["External Services"]
+        Gemini["Google Gemini AI\ngemini-2.0-flash\ngemini-2.5-flash\ngemini-2.5-pro\nEmbeddings API"]
+        Stripe["Stripe\nSubscription Billing\nWebhooks"]
+        Resend["Resend\nTransactional Email"]
+    end
+
+    Browser --> MW
+    MW --> Auth
+    MW --> DB
+    MW --> EF
+    EF --> DB
+    EF --> Storage
+    EF --> Gemini
+    EF --> Stripe
+    EF --> Resend
 ```
 
 ---
@@ -142,30 +142,23 @@ app/
 
 ## Authentication Flow
 
-```
-1. User submits credentials on /auth
-         │
-         ▼
-2. Supabase Auth validates email + password
-         │
-         ▼
-3. JWT issued → stored in browser cookie (httpOnly)
-         │
-         ▼
-4. middleware.ts (lib/supabase/middleware.ts) runs on every request:
-   ├── No session → redirect to /auth
-   ├── Session present → check email domain
-   │     ├── Domain @cdssvic.com.au → allow through
-   │     └── Any other domain → redirect to /auth (domain restriction)
-   └── Session valid → forward to requested route
-         │
-         ▼
-5. Route renders with server-side session context
+```mermaid
+flowchart TD
+    A([User visits protected route]) --> B{Session cookie present?}
+    B -- No --> C[Redirect to /auth]
+    C --> D[User submits credentials]
+    D --> E[Supabase Auth validates\nemail + password]
+    E --> F[JWT issued\nStored in httpOnly cookie]
+    F --> G{Email domain check\nmiddleware.ts}
+    B -- Yes --> G
+    G -- "@cdssvic.com.au" --> H[Request forwarded\nRoute renders with session]
+    G -- "Other domain" --> I[Redirect to /auth\nAccess denied]
 
-Email Confirmation (new users):
-  Supabase sends confirmation email → user clicks link
-  → /auth/callback/route.ts exchanges the code for a session
-  → redirect to /dashboard
+    subgraph NewUser["New User — Email Confirmation"]
+        J[Supabase sends\nconfirmation email] --> K[User clicks link]
+        K --> L[/auth/callback/route.ts\nexchanges code for session]
+        L --> M[Redirect to /dashboard]
+    end
 ```
 
 **Domain restriction**: only `@cdssvic.com.au` email addresses are permitted. This is enforced in `middleware.ts` on every request, server-side.
@@ -312,45 +305,25 @@ All secrets are set via `supabase secrets set` and are available as environment 
 
 ## RAG Pipeline
 
-```
-INGESTION
-─────────
-User uploads document
-         │
-         ▼
-Document chunked into segments
-         │
-         ▼
-generate-embedding (Edge Function)
-→ Gemini embedding API → 768-dim vector
-         │
-         ▼
-INSERT into document_embeddings (content, embedding, metadata)
-stored as extensions.vector(768) via pgvector
+```mermaid
+flowchart TD
+    subgraph Ingestion["Document Ingestion"]
+        A([User uploads document]) --> B[Document chunked\ninto text segments]
+        B --> C[generate-embedding\nedge function]
+        C --> D[Gemini Embeddings API\n768-dimensional vector]
+        D --> E[(INSERT into\ndocument_embeddings\nextensions.vector 768)]
+    end
 
-
-QUERY
-─────
-User submits question to RAG Agent
-         │
-         ▼
-generate-embedding (Edge Function)
-→ query text → 768-dim vector
-         │
-         ▼
-Cosine similarity search against document_embeddings
-(pgvector operator: <=>)
-Top-K most relevant chunks retrieved
-         │
-         ▼
-Retrieved chunks injected as context into Gemini prompt
-         │
-         ▼
-Gemini generates grounded response
-         │
-         ▼
-Response + message history saved to
-rag_agent_conversations + rag_agent_sessions
+    subgraph Query["Query & Response"]
+        F([User submits question\nto RAG Agent]) --> G[generate-embedding\nedge function]
+        G --> H[Query text → 768-dim vector]
+        H --> I[Cosine similarity search\npgvector operator: <=>]
+        I --> J[Top-K relevant\nchunks retrieved]
+        J --> K[Chunks injected as\ncontext into Gemini prompt]
+        K --> L[Gemini generates\ngrounded response]
+        L --> M[(Save to\nrag_agent_conversations\nrag_agent_sessions)]
+        L --> N([Response returned\nto user])
+    end
 ```
 
 ---

@@ -1,8 +1,7 @@
 # CareAxis Deployment Guide
 
-> Maintained by **JD Digital Systems**
-> GitHub: https://github.com/jennofrie/CareAxis
-> Last updated: 2026-02-27
+> Maintained by **JD Digital Systems** — [github.com/jennofrie/CareAxis](https://github.com/jennofrie/CareAxis)
+> Last updated: May 2026
 
 ---
 
