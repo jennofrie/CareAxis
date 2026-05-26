@@ -29,6 +29,7 @@ import { usePermissions } from "@/hooks/usePermissions";
 
 const navItems = [
   { title: "Dashboard", href: "/dashboard", icon: LayoutDashboard, superAdminOnly: false },
+  { title: "Shifts", href: "/shifts", icon: Calendar, superAdminOnly: false },
   { title: "Report Synthesizer", href: "/report-synthesizer", icon: FileText, superAdminOnly: false },
   { title: "CoC Cover Letter", href: "/coc-cover-letter", icon: FileOutput, superAdminOnly: false },
   { title: "Visual Case Notes", href: "/visual-case-notes", icon: StickyNote, superAdminOnly: false },
