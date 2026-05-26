@@ -8,6 +8,8 @@ import { Badge } from "@/components/ui/Badge";
 import { AIProcessingButton } from "@/components/ui/AIProcessingButton";
 import { usePermissions } from "@/hooks/usePermissions";
 import { createClient, invokeWithAuth } from "@/lib/supabase/client";
+import { exportCaseNotePdf } from "@/lib/pdfExportFeatures";
+import { exportCaseNoteDocx } from "@/lib/docxExport";
 import { toast } from "sonner";
 import { GeneratingOverlay } from "@/components/ui/GeneratingOverlay";
 import {
@@ -30,6 +32,7 @@ import {
   Trash2,
   ChevronLeft,
   ChevronRight,
+  Download,
 } from "lucide-react";
 import {
   Sheet,
@@ -358,12 +361,20 @@ export default function VisualCaseNotesPage() {
                 </h2>
                 <div className="flex items-center gap-2">
                   <Button
-                    onClick={() => { setShowHistory(true); setHistoryPage(0); }}
+                    onClick={() => exportCaseNotePdf(result, persona)}
                     variant="outline"
                     className="flex items-center gap-2 text-sm"
                   >
-                    <History className="h-4 w-4" />
-                    History
+                    <Download className="h-4 w-4" />
+                    Export PDF
+                  </Button>
+                  <Button
+                    onClick={() => exportCaseNoteDocx(result, persona)}
+                    variant="outline"
+                    className="flex items-center gap-2 text-sm"
+                  >
+                    <FileText className="h-4 w-4" />
+                    Export DOCX
                   </Button>
                   <Button
                     onClick={copyAll}
@@ -376,6 +387,14 @@ export default function VisualCaseNotesPage() {
                       <Copy className="h-4 w-4" />
                     )}
                     Copy All
+                  </Button>
+                  <Button
+                    onClick={() => { setShowHistory(true); setHistoryPage(0); }}
+                    variant="outline"
+                    className="flex items-center gap-2 text-sm"
+                  >
+                    <History className="h-4 w-4" />
+                    History
                   </Button>
                 </div>
               </div>
